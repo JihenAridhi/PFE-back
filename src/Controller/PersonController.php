@@ -66,6 +66,20 @@ class PersonController extends AbstractController
         return $this->json($person);
     }
 
+    #[Route('/person/login')]
+    public function login(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $person = $this->repo->findOneBy(['email'=>$data['email']]);
+        if ($person){
+            $person->setPhoto($this->getPhoto($person->getId()));
+            if (password_verify($data['password'], $person->getPassword()))
+                $person->setPassword($data['password']);
+            return $this->json($person);
+        }
+        return $this->json(null);
+    }
+
     #[Route('/person/getEmail/{email}')]
     public function getEmail(string $email): Response
     {
@@ -110,7 +124,7 @@ class PersonController extends AbstractController
         $person->setFirstName($data['firstName']);
         $person->setLastName($data['lastName']);
         $person->setEmail($data['email']);
-        $person->setPassword($data['password']);
+        $person->setPassword(password_hash($data['password'], PASSWORD_DEFAULT));
         $person->setBio($data['bio']);
         $person->setDblp($data['dblp']);
         $person->setOrcid($data['orcid']);

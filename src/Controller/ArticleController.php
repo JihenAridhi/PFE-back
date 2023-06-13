@@ -144,13 +144,13 @@ class ArticleController extends AbstractController
 
         for ($i=0; $i<count($authors); $i++)
         {
-            if(!$authors[$i]['id']) {
+            /*if(!$authors[$i]['id']) {
                 $author = new Person($authors[$i]['firstName'], $authors[$i]['lastName'], '', '');
                 $author->setCoAuthor(true);
                 $this->objectManager->persist($author);
-            }
-            else
-                $author = $this->managerRegistry->getRepository(Person::class)->find($authors[$i]['id']);
+            }*/
+
+            $author = $this->managerRegistry->getRepository(Person::class)->find($authors[$i]['id']);
 
             $association = new ArticlePerson($article, $author);
             $this->objectManager->persist($association);
